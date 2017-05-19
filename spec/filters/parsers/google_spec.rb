@@ -49,5 +49,9 @@ describe GoogleQueryParser do
     it "should return query without plus sign when multiple words" do
       expect(parser.parse("/search?hl=fr&q=kibana+4#q=toto")).to eq("kibana 4")
     end
+
+    it "should handle utf 8 invalid characters" do
+      expect(parser.parse("/search?hl&q=\xFF+amazing\xFF+test\xFF")).to eq("amazing test")
+    end
   end
 end

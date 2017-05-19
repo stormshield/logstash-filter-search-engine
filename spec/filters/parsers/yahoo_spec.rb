@@ -49,5 +49,9 @@ describe YahooQueryParser do
     it "should return query without plus sign when multiple words" do
       expect(parser.parse("/search?hl=fr&p=kibana+4#p=toto")).to eq("kibana 4")
     end
+
+    it "should handle utf 8 invalid characters" do
+      expect(parser.parse("/search?p=\xFF+amazing\xFF+test\xFF")).to eq("amazing test")
+    end
   end
 end

@@ -3,6 +3,7 @@ require "logstash/filters/base"
 require "logstash/filters/parsers/bing"
 require "logstash/filters/parsers/google"
 require "logstash/filters/parsers/yahoo"
+require "logstash/filters/utils"
 require "logstash/namespace"
 require "uri"
 
@@ -40,7 +41,8 @@ class LogStash::Filters::SearchEngine < LogStash::Filters::Base
 
     @queryParsers.each do |name, parser|
       if @engines.include?(name) && parser.match(event.get(@site_name_field))
-        event.set(@output_field, parser.parse(URI.decode(event.get(@query_field))))
+        valid_query_field = Utils.removeInvalidChars(event.get(@query_field))
+        event.set(@output_field, parser.parse(URI.decode(valid_query_field)))
       end
     end
 

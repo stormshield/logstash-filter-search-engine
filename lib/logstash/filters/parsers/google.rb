@@ -1,3 +1,6 @@
+# encoding: utf-8
+require "logstash/filters/utils"
+
 class GoogleQueryParser
 
   public
@@ -12,9 +15,10 @@ class GoogleQueryParser
   end
 
   def parse(query)
+    query = Utils.removeInvalidChars(query)
     m = @re_query.match(query)
     if m then
-      return m["query"].tr("+", " ")
+      return m["query"].tr("+", " ").split.join(" ")
     end
   end
 

@@ -92,4 +92,21 @@ describe LogStash::Filters::SearchEngine do
       expect(subject.get("search_engine_query")).to eq('Kibana')
     end
   end
+
+  describe "should remove utf 8 invalid characters in URL" do
+    let(:config) do <<-CONFIG
+      filter {
+       search_engine {
+         engines => ["Bing"]
+       }
+      }
+    CONFIG
+    end
+    sample("dstname" => "www.bing.com", "arg" => "/search?q=%FF+one%FF+test+%FF") do
+      expect(subject.get("search_engine_query")).to eq('one test')
+    end
+  end
+
+
+
 end
