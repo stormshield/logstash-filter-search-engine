@@ -107,6 +107,19 @@ describe LogStash::Filters::SearchEngine do
     end
   end
 
+  describe "should do nothing if arg is not specified" do
+    let(:config) do <<-CONFIG
+      filter {
+       search_engine {
+         engines => ["Google"]
+       }
+      }
+    CONFIG
+    end
 
+    sample("dstname" => "www.google.fr") do
+      expect(subject.get("search_engine_query")).to be_nil
+    end
+  end
 
 end

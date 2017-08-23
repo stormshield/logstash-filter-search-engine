@@ -42,7 +42,11 @@ class LogStash::Filters::SearchEngine < LogStash::Filters::Base
     @queryParsers.each do |name, parser|
       if @engines.include?(name) && parser.match(event.get(@site_name_field))
         valid_query_field = Utils.removeInvalidChars(event.get(@query_field))
-        event.set(@output_field, parser.parse(URI.decode(valid_query_field)))
+        if (valid_query_field)
+          event.set(@output_field, parser.parse(URI.decode(valid_query_field)))
+        else
+          @logger.warn? && @logger.warn("Search engine failed to parse query field")
+        end
       end
     end
 
